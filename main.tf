@@ -22,3 +22,18 @@ module "compute" {
   user_data       = filebase64("${path.module}/userdata.sh")
   subnet_id       = module.networking.web-subnet[0].id
 }
+
+module "loadbalancing" {
+  source               = "./loadbalancing"
+  asg_max_size         = 2
+  asg_min_size         = 1
+  asg_desired_capacity = 2
+  availability_zones   = module.networking.web-subnet-availability_zone_names
+  launch_template_id   = module.compute.launch_template_id
+  security_group_ids   = module.compute.security-group-ids
+  subnets              = module.networking.web-subnet.*.id
+  port                 = 80
+  protocol             = "HTTP"
+  vpc_id               = module.networking.vpc_id
+  target_id            = module.compute.aws_instance_id
+}
