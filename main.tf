@@ -15,12 +15,34 @@ module "networking" {
 }
 
 module "compute" {
-  source          = "./compute"
-  instance_type   = "t2.micro"
-  vpc_id          = module.networking.vpc_id
-  security_groups = local.security_groups
-  user_data       = filebase64("${path.module}/userdata.sh")
-  subnet_id       = module.networking.web-subnet[0].id
+  source                  = "./compute"
+  instance_type           = "t2.micro"
+  vpc_id                  = module.networking.vpc_id
+  security_groups         = local.security_groups
+  user_data               = filebase64("${path.module}/userdata.sh")
+  subnet_id               = module.networking.web-subnet[0].id
+  sg_egress_cidr          = "0.0.0.0/0"
+  sg_egress_from_port     = 0
+  sg_egress_to_port       = 0
+  sg_egress_Protocol      = "-1"
+  iam_managed_policy_s3   = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+  iam_managed_policy_ssm  = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+  ami_filter_name         = "amzn2-ami-hvm*"
+  ami_filter_architecture = "x86_64"
+  ami_owner               = "amazon"
+  iam_role_trust_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Sid    = ""
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        }
+      },
+    ]
+  })
 }
 
 module "loadbalancing" {
@@ -35,5 +57,4 @@ module "loadbalancing" {
   port                 = 80
   protocol             = "HTTP"
   vpc_id               = module.networking.vpc_id
-  target_id            = module.compute.aws_instance_id
-}
+ }

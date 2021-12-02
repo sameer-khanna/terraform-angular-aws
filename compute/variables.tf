@@ -3,3 +3,13 @@ variable "vpc_id" {}
 variable "security_groups" {}
 variable "user_data" {}
 variable "subnet_id" {}
+variable "iam_managed_policy_s3" {}
+variable "iam_managed_policy_ssm" {}
+variable "ami_filter_name" {}
+variable "ami_filter_architecture" {}
+variable "ami_owner" {}
+variable "iam_role_trust_policy" {}
+variable "sg_egress_cidr" {}
+variable "sg_egress_from_port" {}
+variable "sg_egress_to_port" {}
+variable "sg_egress_Protocol" {}

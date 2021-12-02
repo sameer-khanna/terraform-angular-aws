@@ -8,4 +8,3 @@ variable "subnets" {}
 variable "port" {}
 variable "protocol" {}
 variable "vpc_id" {}
-variable "target_id" {}

@@ -2,13 +2,6 @@
 data "aws_availability_zones" "availaibility-zones" {
 }
 
-# data "aws_subnet" "web-subnet" {
-#   filter {
-#     name   = "tag:Name"
-#     values = ["web-*"]
-#   }
-# }
-
 resource "random_shuffle" "shuffle-az" {
   input        = data.aws_availability_zones.availaibility-zones.names
   result_count = var.max_subnetcount

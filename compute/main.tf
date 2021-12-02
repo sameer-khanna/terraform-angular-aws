@@ -1,41 +1,29 @@
 
 data "aws_iam_policy" "AmazonS3FullAccess" {
-  arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+  arn = var.iam_managed_policy_s3
 }
 
 data "aws_iam_policy" "AmazonSSMManagedInstanceCore" {
-  arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+  arn = var.iam_managed_policy_ssm
 }
 
 data "aws_ami" "latest-linux2-ami" {
   most_recent = true
   filter {
     name   = "name"
-    values = ["amzn2-ami-hvm*"]
+    values = [var.ami_filter_name]
   }
   filter {
     name   = "architecture"
-    values = ["x86_64"]
+    values = [var.ami_filter_architecture]
   }
-  owners = ["amazon"]
+  owners = [var.ami_owner]
 }
 
 resource "aws_iam_role" "S3FullAccess-SSMCore" {
   name                = "S3AdminAccess+SSMCore"
   managed_policy_arns = [data.aws_iam_policy.AmazonS3FullAccess.arn, data.aws_iam_policy.AmazonSSMManagedInstanceCore.arn]
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = "sts:AssumeRole"
-        Effect = "Allow"
-        Sid    = ""
-        Principal = {
-          Service = "ec2.amazonaws.com"
-        }
-      },
-    ]
-  })
+  assume_role_policy  = var.iam_role_trust_policy
 }
 
 resource "aws_iam_instance_profile" "webserver-instance-profile" {
@@ -58,10 +46,10 @@ resource "aws_security_group" "security-groups" {
     }
   }
   egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    from_port   = var.sg_egress_from_port
+    to_port     = var.sg_egress_to_port
+    protocol    = var.sg_egress_Protocol
+    cidr_blocks = [var.sg_egress_cidr]
   }
 
 }
@@ -86,11 +74,4 @@ resource "aws_launch_template" "webserver-lt" {
     }
   }
   user_data = var.user_data
-}
-
-resource "aws_instance" "web-server" {
-  launch_template {
-    id      = aws_launch_template.webserver-lt.id
-    version = "$Latest"
-  }
 }
