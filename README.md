@@ -1,5 +1,5 @@
 # terraform-angular-aws
-#### Terraform code that creates a VPC with all the networking and an EC2 instance with NGINX installed on it that runs a sample Angular app.
+#### Terraform code that creates a VPC with all the networking and multiple EC2 instances (across AZs) with NGINX servers installed on them that run a sample Angular app. The EC2 instances are front-ended by an ALB. This is a work in progress repo and I continue to add features to it. 
 
 The code has the following modules - 
 * **Networking** - For VPC and all the related networking. We are using the 10.16.0.0/16 CIDR for the VPC and 16 /20 subnets (4 each for web, app, db and reserved). The subnets are spread across 4 AZs for high availability.  
