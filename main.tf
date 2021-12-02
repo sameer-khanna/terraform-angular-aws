@@ -58,3 +58,10 @@ module "loadbalancing" {
   protocol             = "HTTP"
   vpc_id               = module.networking.vpc_id
 }
+
+module "dns" {
+  source          = "./dns"
+  alb_dns_zone_id = module.loadbalancing.alb-zone-id
+  alb_dns_name    = module.loadbalancing.alb-dns
+  hosted_zone     = "sameerkhanna.net."
+}
