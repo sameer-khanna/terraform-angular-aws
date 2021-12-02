@@ -1,10 +1,11 @@
 resource "aws_autoscaling_group" "asg" {
-  name              = "WebServer-ASG"
-  max_size          = var.asg_max_size
-  min_size          = var.asg_min_size
-  desired_capacity  = var.asg_desired_capacity
-  health_check_type = "ELB"
-  target_group_arns = [aws_lb_target_group.alb_target_group.arn]
+  name                = "WebServer-ASG"
+  max_size            = var.asg_max_size
+  min_size            = var.asg_min_size
+  desired_capacity    = var.asg_desired_capacity
+  health_check_type   = "ELB"
+  target_group_arns   = [aws_lb_target_group.alb_target_group.arn]
+  vpc_zone_identifier = var.subnets
   launch_template {
     id      = var.launch_template_id
     version = "$Latest"

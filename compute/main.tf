@@ -61,7 +61,6 @@ resource "aws_launch_template" "webserver-lt" {
   instance_type = var.instance_type
   network_interfaces {
     security_groups = aws_security_group.security-groups.*.public.id
-    subnet_id       = var.subnet_id
   }
   iam_instance_profile {
     arn = aws_iam_instance_profile.webserver-instance-profile.arn

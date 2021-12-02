@@ -9,4 +9,3 @@ output "web-subnet" {
 output "web-subnet-availability_zone_names" {
   value = random_shuffle.shuffle-az.result
 }
-

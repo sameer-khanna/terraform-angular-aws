@@ -57,4 +57,4 @@ module "loadbalancing" {
   port                 = 80
   protocol             = "HTTP"
   vpc_id               = module.networking.vpc_id
- }
+}
