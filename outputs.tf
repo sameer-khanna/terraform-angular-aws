@@ -1,3 +1,3 @@
 output "website-url" {
-  value = "http://${module.dns.fqdn}"
+  value = "https://${module.dns.aws_route53_record.fqdn}"
 }

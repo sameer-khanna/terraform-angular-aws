@@ -54,9 +54,13 @@ module "loadbalancing" {
   launch_template_id   = module.compute.launch_template_id
   security_group_ids   = module.compute.security-group-ids
   subnets              = module.networking.web-subnet.*.id
-  port                 = 80
-  protocol             = "HTTP"
+  tg_port              = 80
+  listener_port        = 80
+  tg_protocol          = "HTTP"
+  listener_protocol    = "HTTP"
   vpc_id               = module.networking.vpc_id
+  # ssl_cert_arn         = module.ssl-certificate.ssl-cert.arn
+  # ssl_cert_validation  = module.ssl-certificate.acm_certificate_validation
 }
 
 module "dns" {
@@ -65,3 +69,11 @@ module "dns" {
   alb_dns_name    = module.loadbalancing.alb-dns
   hosted_zone     = "sameerkhanna.net."
 }
+
+# module "ssl-certificate" {
+#   source             = "./ssl-certificate"
+#   domain_name        = module.dns.aws_route53_record.fqdn
+#   fqdn               = module.dns.aws_route53_record.fqdn
+#   aws_route53_record = module.dns.aws_route53_record
+#   zone_id            = module.dns.zone_id
+# }

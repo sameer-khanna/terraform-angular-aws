@@ -30,8 +30,8 @@ resource "aws_lb" "alb" {
 
 resource "aws_lb_target_group" "alb_target_group" {
   name     = "ALB-target-group"
-  port     = var.port
-  protocol = var.protocol
+  port     = var.tg_port
+  protocol = var.tg_protocol
   vpc_id   = var.vpc_id
   lifecycle {
     create_before_destroy = true
@@ -40,8 +40,10 @@ resource "aws_lb_target_group" "alb_target_group" {
 
 resource "aws_lb_listener" "alb_listener" {
   load_balancer_arn = aws_lb.alb.arn
-  port              = var.port
-  protocol          = var.protocol
+  port              = var.listener_port
+  protocol          = var.listener_protocol
+  # certificate_arn   = var.ssl_cert_arn
+  # depends_on        = [var.ssl_cert_validation]
 
   default_action {
     type             = "forward"
