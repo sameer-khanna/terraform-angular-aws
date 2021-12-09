@@ -26,12 +26,12 @@ resource "aws_iam_role" "S3FullAccess-SSMCore" {
   assume_role_policy  = var.iam_role_trust_policy
 }
 
-resource "aws_iam_instance_profile" "webserver-instance-profile" {
+resource "aws_iam_instance_profile" "instance-profile" {
   name = "WebServer-Instance-Profile"
   role = aws_iam_role.S3FullAccess-SSMCore.name
 }
 
-resource "aws_security_group" "security-groups" {
+resource "aws_security_group" "web-security-groups" {
   for_each    = var.security_groups
   name        = each.value.name
   description = each.value.description
@@ -54,16 +54,37 @@ resource "aws_security_group" "security-groups" {
 
 }
 
+resource "aws_security_group" "app-security-group" {
+  name        = var.app_sg_name
+  description = var.app_sg_description
+  vpc_id      = var.vpc_id
+  ingress {
+    from_port       = var.app_sg_from_port
+    to_port         = var.app_sg_to_port
+    protocol        = var.app_sg_protocol
+    security_groups = aws_security_group.web-security-groups.*.public.id
+    self            = true
+  }
+  egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+}
+
 resource "aws_launch_template" "webserver-lt" {
   name          = "WebServer-LT"
   description   = "Web Server launch template created using Terraform."
   image_id      = data.aws_ami.latest-linux2-ami.id
   instance_type = var.instance_type
   network_interfaces {
-    security_groups = aws_security_group.security-groups.*.public.id
+    security_groups = aws_security_group.web-security-groups.*.public.id
   }
   iam_instance_profile {
-    arn = aws_iam_instance_profile.webserver-instance-profile.arn
+    arn = aws_iam_instance_profile.instance-profile.arn
   }
   tag_specifications {
     resource_type = "instance"
@@ -73,4 +94,24 @@ resource "aws_launch_template" "webserver-lt" {
     }
   }
   user_data = var.user_data
+}
+
+resource "aws_launch_template" "appserver-lt" {
+  name          = "AppServer-LT"
+  description   = "App Server launch template created using Terraform."
+  image_id      = data.aws_ami.latest-linux2-ami.id
+  instance_type = var.instance_type
+  network_interfaces {
+    security_groups = [aws_security_group.app-security-group.id]
+  }
+  iam_instance_profile {
+    arn = aws_iam_instance_profile.instance-profile.arn
+  }
+  tag_specifications {
+    resource_type = "instance"
+
+    tags = {
+      Name = "appserver-fromLT"
+    }
+  }
 }

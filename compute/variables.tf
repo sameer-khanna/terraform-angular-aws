@@ -13,3 +13,8 @@ variable "sg_egress_cidr" {}
 variable "sg_egress_from_port" {}
 variable "sg_egress_to_port" {}
 variable "sg_egress_Protocol" {}
+variable "app_sg_name" {}
+variable "app_sg_description" {}
+variable "app_sg_from_port" {}
+variable "app_sg_to_port" {}
+variable "app_sg_protocol" {}

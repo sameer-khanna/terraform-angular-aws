@@ -1,7 +1,11 @@
 output "alb-dns" {
-  value = aws_lb.alb.dns_name
+  value = aws_lb.web_alb.dns_name
 }
 
 output "alb-zone-id" {
-  value = aws_lb.alb.zone_id
+  value = aws_lb.web_alb.zone_id
+}
+
+output "availability-zone" {
+  value = data.aws_autoscaling_group.web_asg.availability_zones
 }

@@ -2,6 +2,17 @@
 data "aws_availability_zones" "availaibility-zones" {
 }
 
+data "aws_subnets" "app_subnets" {
+  filter {
+    name   = "tag:Name"
+    values = ["app-*"]
+  }
+  filter {
+    name   = "availabilityZone"
+    values = var.availability_zone
+  }
+}
+
 resource "random_shuffle" "shuffle-az" {
   input        = data.aws_availability_zones.availaibility-zones.names
   result_count = var.max_subnetcount
@@ -113,4 +124,20 @@ resource "aws_internet_gateway" "igw" {
   tags = {
     Name = "IGW"
   }
+}
+
+resource "aws_vpc_endpoint" "interface_endpoints" {
+  for_each            = var.vpc_endpoints
+  vpc_id              = aws_vpc.tf-project-vpc.id
+  service_name        = each.value.service_name
+  vpc_endpoint_type   = each.value.vpc_endpoint_type
+  subnet_ids          = data.aws_subnets.app_subnets.ids
+  security_group_ids  = var.security_group_ids
+  private_dns_enabled = true
+}
+
+resource "aws_vpc_endpoint" "gateway_endpoint" {
+  vpc_id            = aws_vpc.tf-project-vpc.id
+  service_name      = var.service_name
+  vpc_endpoint_type = var.vpc_endpoint_type
 }

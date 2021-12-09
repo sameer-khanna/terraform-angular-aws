@@ -12,6 +12,13 @@ module "networking" {
   db_cidr_blocks        = [for i in range(8, 12, 1) : cidrsubnet(var.vpc_cidr, 4, i)]
   reserved_cidr_blocks  = [for i in range(12, 16, 1) : cidrsubnet(var.vpc_cidr, 4, i)]
   max_subnetcount       = 20
+  vpc_endpoints         = local.vpc_endpoints
+  security_group_ids = [
+    module.compute.app_security_group_id
+  ]
+  availability_zone = module.loadbalancing.availability-zone
+  service_name      = "com.amazonaws.us-east-1.s3"
+  vpc_endpoint_type = "Gateway"
 }
 
 module "compute" {
@@ -25,6 +32,11 @@ module "compute" {
   sg_egress_from_port     = 0
   sg_egress_to_port       = 0
   sg_egress_Protocol      = "-1"
+  app_sg_name             = "appSG"
+  app_sg_description      = "Security group for the app servers"
+  app_sg_from_port        = 8080
+  app_sg_to_port          = 8080
+  app_sg_protocol         = "TCP"
   iam_managed_policy_s3   = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
   iam_managed_policy_ssm  = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
   ami_filter_name         = "amzn2-ami-hvm*"
@@ -46,17 +58,25 @@ module "compute" {
 }
 
 module "loadbalancing" {
-  source               = "./loadbalancing"
-  asg_max_size         = 2
-  asg_min_size         = 1
-  asg_desired_capacity = 2
-  availability_zones   = module.networking.web-subnet-availability_zone_names
-  launch_template_id   = module.compute.launch_template_id
-  security_group_ids   = module.compute.security-group-ids
-  subnets              = module.networking.web-subnet.*.id
-  port                 = 80
-  protocol             = "HTTP"
-  vpc_id               = module.networking.vpc_id
+  source                   = "./loadbalancing"
+  web_asg_max_size         = 1
+  web_asg_min_size         = 1
+  web_asg_desired_capacity = 1
+  availability_zones       = module.networking.web-subnet-availability_zone_names
+  web_launch_template_id   = module.compute.web-launch_template_id
+  web_security_group_ids   = module.compute.web_security-group-ids
+  web_subnets              = module.networking.web-subnet.*.id
+  web_port                 = 80
+  web_protocol             = "HTTP"
+  vpc_id                   = module.networking.vpc_id
+  app_asg_max_size         = 1
+  app_asg_min_size         = 1
+  app_asg_desired_capacity = 1
+  app_launch_template_id   = module.compute.app-launch_template_id
+  app_security_group_ids   = module.compute.app_security-group-ids
+  app_subnets              = module.networking.app_subnet_ids
+  app_port                 = 8080
+  app_protocol             = "HTTP"
 }
 
 module "dns" {

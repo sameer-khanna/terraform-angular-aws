@@ -10,3 +10,8 @@ variable "app_cidr_blocks" {}
 variable "db_cidr_blocks" {}
 variable "reserved_cidr_blocks" {}
 variable "max_subnetcount" {}
+variable "vpc_endpoints" {}
+variable "security_group_ids" {}
+variable "availability_zone" {}
+variable "service_name" {}
+variable "vpc_endpoint_type" {}
