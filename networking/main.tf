@@ -141,3 +141,8 @@ resource "aws_vpc_endpoint" "gateway_endpoint" {
   service_name      = var.service_name
   vpc_endpoint_type = var.vpc_endpoint_type
 }
+
+resource "aws_vpc_endpoint_route_table_association" "gateway_endpoint_rt_association" {
+  route_table_id  = aws_route_table.private-rt.id
+  vpc_endpoint_id = aws_vpc_endpoint.gateway_endpoint.id
+}

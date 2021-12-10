@@ -18,3 +18,4 @@ variable "app_sg_description" {}
 variable "app_sg_from_port" {}
 variable "app_sg_to_port" {}
 variable "app_sg_protocol" {}
+variable "appserver_ami_id" {}

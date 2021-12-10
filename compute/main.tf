@@ -99,7 +99,7 @@ resource "aws_launch_template" "webserver-lt" {
 resource "aws_launch_template" "appserver-lt" {
   name          = "AppServer-LT"
   description   = "App Server launch template created using Terraform."
-  image_id      = data.aws_ami.latest-linux2-ami.id
+  image_id      = var.appserver_ami_id
   instance_type = var.instance_type
   network_interfaces {
     security_groups = [aws_security_group.app-security-group.id]

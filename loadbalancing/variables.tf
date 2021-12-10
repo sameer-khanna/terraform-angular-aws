@@ -9,8 +9,6 @@ variable "web_port" {}
 variable "web_protocol" {}
 variable "vpc_id" {}
 variable "app_launch_template_id" {}
-
-
 variable "app_asg_max_size" {}
 variable "app_asg_min_size" {}
 variable "app_asg_desired_capacity" {}
