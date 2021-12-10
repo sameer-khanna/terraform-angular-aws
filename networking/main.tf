@@ -126,15 +126,15 @@ resource "aws_internet_gateway" "igw" {
   }
 }
 
-resource "aws_vpc_endpoint" "interface_endpoints" {
-  for_each            = var.vpc_endpoints
-  vpc_id              = aws_vpc.tf-project-vpc.id
-  service_name        = each.value.service_name
-  vpc_endpoint_type   = each.value.vpc_endpoint_type
-  subnet_ids          = data.aws_subnets.app_subnets.ids
-  security_group_ids  = var.security_group_ids
-  private_dns_enabled = true
-}
+# resource "aws_vpc_endpoint" "interface_endpoints" {
+#   for_each            = var.vpc_endpoints
+#   vpc_id              = aws_vpc.tf-project-vpc.id
+#   service_name        = each.value.service_name
+#   vpc_endpoint_type   = each.value.vpc_endpoint_type
+#   subnet_ids          = data.aws_subnets.app_subnets.ids
+#   security_group_ids  = var.security_group_ids
+#   private_dns_enabled = true
+# }
 
 resource "aws_vpc_endpoint" "gateway_endpoint" {
   vpc_id            = aws_vpc.tf-project-vpc.id

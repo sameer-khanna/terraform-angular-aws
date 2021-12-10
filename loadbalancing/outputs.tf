@@ -6,8 +6,12 @@ output "app-alb-dns" {
   value = aws_lb.app_alb.dns_name
 }
 
-output "alb-zone-id" {
+output "web-alb-zone-id" {
   value = aws_lb.web_alb.zone_id
+}
+
+output "app-alb-zone-id" {
+  value = aws_lb.app_alb.zone_id
 }
 
 output "availability-zone" {

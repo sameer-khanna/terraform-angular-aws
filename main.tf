@@ -83,8 +83,12 @@ module "loadbalancing" {
 }
 
 module "dns" {
-  source          = "./dns"
-  alb_dns_zone_id = module.loadbalancing.alb-zone-id
-  alb_dns_name    = module.loadbalancing.web-alb-dns
-  hosted_zone     = "sameerkhanna.net."
+  source                   = "./dns"
+  web_alb_dns_zone_id      = module.loadbalancing.web-alb-zone-id
+  web_alb_dns_name         = module.loadbalancing.web-alb-dns
+  app_alb_dns_zone_id      = module.loadbalancing.app-alb-zone-id
+  app_alb_dns_name         = module.loadbalancing.app-alb-dns
+  hosted_zone              = "sameerkhanna.net."
+  vpc_id                   = module.networking.vpc_id
+  private_hosted_zone_name = "sameerkhanna.net"
 }
