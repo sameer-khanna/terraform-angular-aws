@@ -100,7 +100,7 @@ resource "aws_lb_target_group" "app_alb_target_group" {
 
 resource "aws_lb_listener" "app_alb_listener" {
   load_balancer_arn = aws_lb.app_alb.arn
-  port              = var.app_port
+  port              = var.app_listener_port
   protocol          = var.app_protocol
 
   default_action {

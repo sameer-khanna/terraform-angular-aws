@@ -93,7 +93,7 @@ resource "aws_launch_template" "webserver-lt" {
       Name = "webserver-fromLT"
     }
   }
-  user_data = var.user_data
+  user_data = var.web_user_data
 }
 
 resource "aws_launch_template" "appserver-lt" {
@@ -114,4 +114,5 @@ resource "aws_launch_template" "appserver-lt" {
       Name = "appserver-fromLT"
     }
   }
+  user_data = var.app_user_data
 }

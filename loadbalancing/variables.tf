@@ -16,3 +16,4 @@ variable "app_security_group_ids" {}
 variable "app_subnets" {}
 variable "app_port" {}
 variable "app_protocol" {}
+variable "app_listener_port" {}

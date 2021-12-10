@@ -26,7 +26,8 @@ module "compute" {
   instance_type           = "t2.micro"
   vpc_id                  = module.networking.vpc_id
   security_groups         = local.security_groups
-  user_data               = filebase64("${path.module}/userdata.sh")
+  web_user_data           = filebase64("${path.module}/webserveruserdata.sh")
+  app_user_data           = filebase64("${path.module}/appserveruserdata.sh")
   subnet_id               = module.networking.web-subnet[0].id
   sg_egress_cidr          = "0.0.0.0/0"
   sg_egress_from_port     = 0
@@ -77,12 +78,13 @@ module "loadbalancing" {
   app_security_group_ids   = module.compute.app_security-group-ids
   app_subnets              = module.networking.app_subnet_ids
   app_port                 = 8080
+  app_listener_port        = 80
   app_protocol             = "HTTP"
 }
 
 module "dns" {
   source          = "./dns"
   alb_dns_zone_id = module.loadbalancing.alb-zone-id
-  alb_dns_name    = module.loadbalancing.alb-dns
+  alb_dns_name    = module.loadbalancing.web-alb-dns
   hosted_zone     = "sameerkhanna.net."
 }
