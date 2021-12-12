@@ -28,5 +28,8 @@ cd /etc/nginx
 line_old='/usr/share/nginx/html'
 line_new='/var/www/testangularapp'
 sed -i "s%$line_old%$line_new%g" /etc/nginx/nginx.conf
+line_old='/var/www/testangularapp;'
+line_new='/var/www/testangularapp;location \/ {try_files $uri $uri\/ \/index.html;}'
+sed -i "s%$line_old%$line_new%g" /etc/nginx/nginx.conf
 
 systemctl restart nginx

@@ -3,5 +3,5 @@ output "api-url" {
 }
 
 output "website-url" {
-  value = "http://${module.dns.web-fqdn}"
+  value = "http://${module.dns.web-fqdn}/home"
 }
