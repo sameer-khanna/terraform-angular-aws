@@ -90,5 +90,5 @@ module "dns" {
   app_alb_dns_name         = module.loadbalancing.app-alb-dns
   hosted_zone              = "sameerkhanna.net."
   vpc_id                   = module.networking.vpc_id
-  private_hosted_zone_name = "sameerkhanna.net"
+  private_hosted_zone_name = "internal-sameerkhanna.net"
 }
