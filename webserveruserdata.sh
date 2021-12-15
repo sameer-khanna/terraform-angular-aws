@@ -65,7 +65,10 @@ http {
     # See http://nginx.org/en/docs/ngx_core_module.html#include
     # for more information.
     include /etc/nginx/conf.d/*.conf;
-
+    resolver 10.16.0.2 valid=300s;
+    upstream apiserver {
+        server api.internal-sameerkhanna.net;
+    }
     server {
         listen       80;
         listen       [::]:80;
@@ -76,12 +79,11 @@ http {
         }
 
         location /api/ {
-        resolver 10.16.0.2 valid=300s;
-		add_header 'Access-Control-Allow-Origin' '*';
+        add_header 'Access-Control-Allow-Origin' '*';
 		add_header 'Access-Control-Allow-Credentials' 'true';
 		add_header 'Access-Control-Allow-Headers' '*';
 		add_header 'Access-Control-Allow-Methods' '*';
-        proxy_pass http://api.internal-sameerkhanna.net/api/;
+        proxy_pass http://apiserver/api/;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_set_header X-Forwarded-Port $server_port;
