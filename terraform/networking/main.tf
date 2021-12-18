@@ -13,6 +13,17 @@ data "aws_subnets" "app_subnets" {
   }
 }
 
+data "aws_subnets" "web_subnets" {
+  filter {
+    name   = "tag:Name"
+    values = ["web-*"]
+  }
+  filter {
+    name   = "availabilityZone"
+    values = var.availability_zone
+  }
+}
+
 resource "random_shuffle" "shuffle-az" {
   input        = data.aws_availability_zones.availaibility-zones.names
   result_count = var.max_subnetcount

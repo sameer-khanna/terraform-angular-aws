@@ -3,7 +3,6 @@ variable "vpc_id" {}
 variable "security_groups" {}
 variable "web_user_data" {}
 variable "app_user_data" {}
-variable "subnet_id" {}
 variable "iam_managed_policy_s3" {}
 variable "iam_managed_policy_ssm" {}
 variable "ami_filter_name" {}

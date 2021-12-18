@@ -28,7 +28,6 @@ module "compute" {
   security_groups         = local.security_groups
   web_user_data           = filebase64("${path.module}/webserveruserdata.sh")
   app_user_data           = filebase64("${path.module}/appserveruserdata.sh")
-  subnet_id               = module.networking.web-subnet[0].id
   sg_egress_cidr          = "0.0.0.0/0"
   sg_egress_from_port     = 0
   sg_egress_to_port       = 0
@@ -38,7 +37,7 @@ module "compute" {
   app_sg_from_port        = 0
   app_sg_to_port          = 0
   app_sg_protocol         = "-1"
-  iam_managed_policy_s3   = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+  iam_managed_policy_s3   = "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"
   iam_managed_policy_ssm  = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
   ami_filter_name         = "amzn2-ami-hvm*"
   ami_filter_architecture = "x86_64"
@@ -64,10 +63,10 @@ module "loadbalancing" {
   web_asg_max_size         = 1
   web_asg_min_size         = 1
   web_asg_desired_capacity = 1
-  availability_zones       = module.networking.web-subnet-availability_zone_names
+  availability_zones       = module.networking.app-subnet-availability_zone_names
   web_launch_template_id   = module.compute.web-launch_template_id
   web_security_group_ids   = module.compute.web_security-group-ids
-  web_subnets              = module.networking.web-subnet.*.id
+  web_subnets              = module.networking.web_subnet_ids
   web_port                 = 80
   web_protocol             = "HTTP"
   vpc_id                   = module.networking.vpc_id
@@ -76,10 +75,11 @@ module "loadbalancing" {
   app_asg_desired_capacity = 1
   app_launch_template_id   = module.compute.app-launch_template_id
   app_security_group_ids   = module.compute.app_security-group-ids
-  app_subnets              = module.networking.app_subnet_ids
+  app_subnets              = module.networking.app-subnet.*.id
   app_port                 = 8080
   app_listener_port        = 80
   app_protocol             = "HTTP"
+  app-fqdn                 = module.dns.app-fqdn
 }
 
 module "dns" {

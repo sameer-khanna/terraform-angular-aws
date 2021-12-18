@@ -15,5 +15,5 @@ output "app-alb-zone-id" {
 }
 
 output "availability-zone" {
-  value = data.aws_autoscaling_group.web_asg.availability_zones
+  value = data.aws_autoscaling_group.app_asg.availability_zones
 }

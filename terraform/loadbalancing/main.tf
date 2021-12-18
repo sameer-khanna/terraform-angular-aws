@@ -1,8 +1,11 @@
-data "aws_autoscaling_group" "web_asg" {
-  name = aws_autoscaling_group.web_asg.name
+data "aws_autoscaling_group" "app_asg" {
+  name = aws_autoscaling_group.app_asg.name
 }
 
 resource "aws_autoscaling_group" "web_asg" {
+  depends_on = [
+    var.app-fqdn
+  ]
   name                = "WebServer-ASG"
   max_size            = var.web_asg_max_size
   min_size            = var.web_asg_min_size
@@ -51,11 +54,6 @@ resource "aws_lb_listener" "web_alb_listener" {
     type             = "forward"
     target_group_arn = aws_lb_target_group.web_alb_target_group.arn
   }
-}
-
-
-data "aws_autoscaling_group" "app_asg" {
-  name = aws_autoscaling_group.app_asg.name
 }
 
 resource "aws_autoscaling_group" "app_asg" {

@@ -1,5 +1,5 @@
 
-data "aws_iam_policy" "AmazonS3FullAccess" {
+data "aws_iam_policy" "AmazonS3ReadOnlyAccess" {
   arn = var.iam_managed_policy_s3
 }
 
@@ -20,15 +20,15 @@ data "aws_ami" "latest-linux2-ami" {
   owners = [var.ami_owner]
 }
 
-resource "aws_iam_role" "S3FullAccess-SSMCore" {
-  name                = "S3AdminAccess+SSMCore"
-  managed_policy_arns = [data.aws_iam_policy.AmazonS3FullAccess.arn, data.aws_iam_policy.AmazonSSMManagedInstanceCore.arn]
+resource "aws_iam_role" "S3ReadOnlyAccess-SSMCore" {
+  name                = "S3ReadOnlyAccess+SSMCore"
+  managed_policy_arns = [data.aws_iam_policy.AmazonS3ReadOnlyAccess.arn, data.aws_iam_policy.AmazonSSMManagedInstanceCore.arn]
   assume_role_policy  = var.iam_role_trust_policy
 }
 
 resource "aws_iam_instance_profile" "instance-profile" {
   name = "WebServer-Instance-Profile"
-  role = aws_iam_role.S3FullAccess-SSMCore.name
+  role = aws_iam_role.S3ReadOnlyAccess-SSMCore.name
 }
 
 resource "aws_security_group" "web-security-groups" {
