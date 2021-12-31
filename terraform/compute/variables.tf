@@ -19,3 +19,8 @@ variable "app_sg_from_port" {}
 variable "app_sg_to_port" {}
 variable "app_sg_protocol" {}
 variable "appserver_ami_id" {}
+variable "db_sg_name" {}
+variable "db_sg_description" {}
+variable "db_sg_from_port" {}
+variable "db_sg_to_port" {}
+variable "db_sg_protocol" {}

@@ -75,6 +75,18 @@ resource "aws_security_group" "app-security-group" {
 
 }
 
+resource "aws_security_group" "db-security-group" {
+  name        = var.db_sg_name
+  description = var.db_sg_description
+  vpc_id      = var.vpc_id
+  ingress {
+    from_port       = var.db_sg_from_port
+    to_port         = var.db_sg_to_port
+    protocol        = var.db_sg_protocol
+    security_groups = [aws_security_group.app-security-group.id]
+  }
+}
+
 resource "aws_launch_template" "webserver-lt" {
   name          = "WebServer-LT"
   description   = "Web Server launch template created using Terraform."

@@ -1,0 +1,11 @@
+variable "subnet_ids" {}
+variable "allocated_storage" {}
+variable "engine" {}
+variable "engine_version" {}
+variable "instance_class" {}
+variable "name" {}
+variable "username" {}
+variable "password" {}
+variable "vpc_security_group_ids" {}
+variable "skip_final_snapshot" {}
+variable "identifier" {}

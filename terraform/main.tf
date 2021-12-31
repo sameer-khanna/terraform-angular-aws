@@ -37,12 +37,17 @@ module "compute" {
   app_sg_from_port        = 0
   app_sg_to_port          = 0
   app_sg_protocol         = "-1"
+  db_sg_name              = "dbSG"
+  db_sg_description       = "Security group for the database"
+  db_sg_from_port         = 3306
+  db_sg_to_port           = 3306
+  db_sg_protocol          = "TCP"
   iam_managed_policy_s3   = "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"
   iam_managed_policy_ssm  = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
   ami_filter_name         = "amzn2-ami-hvm*"
   ami_filter_architecture = "x86_64"
   ami_owner               = "amazon"
-  appserver_ami_id        = "ami-044c18f8b5288e490"
+  appserver_ami_id        = "ami-0b897cce8330e3647"
   iam_role_trust_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -91,4 +96,25 @@ module "dns" {
   hosted_zone              = "sameerkhanna.net."
   vpc_id                   = module.networking.vpc_id
   private_hosted_zone_name = "internal-sameerkhanna.net"
+}
+
+module "database" {
+  source                 = "./database"
+  subnet_ids             = module.networking.db_subnet_ids
+  allocated_storage      = 10
+  engine                 = "mysql"
+  engine_version         = "8.0.23"
+  instance_class         = "db.t2.micro"
+  name                   = "tfprojectdb"
+  identifier             = "tfprojectdb"
+  username               = module.parameters.rds-master-username
+  password               = module.parameters.rds-master-password
+  skip_final_snapshot    = true
+  vpc_security_group_ids = [module.compute.db_security_group_id]
+}
+
+module "parameters" {
+  source            = "./parameters"
+  db_username       = "admin"
+  connection_string = module.database.rds_connection_string
 }

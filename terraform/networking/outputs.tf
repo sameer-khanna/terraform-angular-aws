@@ -13,3 +13,7 @@ output "app-subnet-availability_zone_names" {
 output "web_subnet_ids" {
   value = data.aws_subnets.web_subnets.ids
 }
+
+output "db_subnet_ids" {
+  value = aws_subnet.db-subnet.*.id
+}
