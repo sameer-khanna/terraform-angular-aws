@@ -142,7 +142,9 @@ resource "aws_vpc_endpoint" "interface_endpoints" {
   vpc_id              = aws_vpc.tf-project-vpc.id
   service_name        = each.value.service_name
   vpc_endpoint_type   = each.value.vpc_endpoint_type
-  subnet_ids          = data.aws_subnets.app_subnets.ids
+  # Being cost conscious using only 1 Systems Manager interface endpoint since this is a test project. In PROD we should provision multiple endpoints across AZs for HA. 
+  # subnet_ids          = data.aws_subnets.app_subnets.ids
+  subnet_ids          = [data.aws_subnets.app_subnets.ids[0]]
   security_group_ids  = var.security_group_ids
   private_dns_enabled = true
 }
