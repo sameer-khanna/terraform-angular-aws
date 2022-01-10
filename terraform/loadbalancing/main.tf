@@ -57,6 +57,9 @@ resource "aws_lb_listener" "web_alb_listener" {
 }
 
 resource "aws_autoscaling_group" "app_asg" {
+  depends_on = [
+    var.gateway_endpoint_rt_association_id
+  ]
   name                = "AppServer-ASG"
   max_size            = var.app_asg_max_size
   min_size            = var.app_asg_min_size

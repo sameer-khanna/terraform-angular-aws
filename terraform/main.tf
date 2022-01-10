@@ -64,27 +64,28 @@ module "compute" {
 }
 
 module "loadbalancing" {
-  source                   = "./loadbalancing"
-  web_asg_max_size         = 1
-  web_asg_min_size         = 1
-  web_asg_desired_capacity = 1
-  availability_zones       = module.networking.app-subnet-availability_zone_names
-  web_launch_template_id   = module.compute.web-launch_template_id
-  web_security_group_ids   = module.compute.web_security-group-ids
-  web_subnets              = module.networking.web_subnet_ids
-  web_port                 = 80
-  web_protocol             = "HTTP"
-  vpc_id                   = module.networking.vpc_id
-  app_asg_max_size         = 1
-  app_asg_min_size         = 1
-  app_asg_desired_capacity = 1
-  app_launch_template_id   = module.compute.app-launch_template_id
-  app_security_group_ids   = module.compute.app_security-group-ids
-  app_subnets              = module.networking.app-subnet.*.id
-  app_port                 = 8080
-  app_listener_port        = 80
-  app_protocol             = "HTTP"
-  app-fqdn                 = module.dns.app-fqdn
+  source                             = "./loadbalancing"
+  web_asg_max_size                   = 1
+  web_asg_min_size                   = 1
+  web_asg_desired_capacity           = 1
+  availability_zones                 = module.networking.app-subnet-availability_zone_names
+  web_launch_template_id             = module.compute.web-launch_template_id
+  web_security_group_ids             = module.compute.web_security-group-ids
+  web_subnets                        = module.networking.web_subnet_ids
+  web_port                           = 80
+  web_protocol                       = "HTTP"
+  vpc_id                             = module.networking.vpc_id
+  app_asg_max_size                   = 1
+  app_asg_min_size                   = 1
+  app_asg_desired_capacity           = 1
+  app_launch_template_id             = module.compute.app-launch_template_id
+  app_security_group_ids             = module.compute.app_security-group-ids
+  app_subnets                        = module.networking.app-subnet.*.id
+  app_port                           = 8080
+  app_listener_port                  = 80
+  app_protocol                       = "HTTP"
+  app-fqdn                           = module.dns.app-fqdn
+  gateway_endpoint_rt_association_id = module.networking.gateway_endpoint_rt_association_id
 }
 
 module "dns" {

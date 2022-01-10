@@ -18,3 +18,4 @@ variable "app_port" {}
 variable "app_protocol" {}
 variable "app_listener_port" {}
 variable "app-fqdn" {}
+variable "gateway_endpoint_rt_association_id" {}

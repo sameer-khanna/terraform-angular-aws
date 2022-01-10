@@ -17,3 +17,7 @@ output "web_subnet_ids" {
 output "db_subnet_ids" {
   value = aws_subnet.db-subnet.*.id
 }
+
+output "gateway_endpoint_rt_association_id" {
+  value = aws_vpc_endpoint_route_table_association.gateway_endpoint_rt_association.id
+}
